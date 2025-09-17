@@ -1,0 +1,2 @@
+# Мне лень тут что-то писать
+For more information, see README_en.md or README_ru.md.
