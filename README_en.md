@@ -1,4 +1,2 @@
 # Terminal to python
-Hello, this is a small terminal written in Python.
-It is very easy to customize.
-Everything you need is in the (main_en.py)
+Hi, this is a Python script that slightly emulates a real Linux terminal. I have nothing more to say.

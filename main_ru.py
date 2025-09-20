@@ -1,107 +1,157 @@
-# !/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# main_ru.py - Простой эмулятор bash на Python с русским интерфейсом
-# Автор: Maks-Pacman
-# Версия: 1.0
-
-# Импорт необходимых модулей
 import os
-import sys
 import readline
+import sys
+# Настройки
 
-# Настройки эмулятора
-directoria = "/home/maks-pacman/CODING"
-runing = True
+directoria = "/home/maks-pacman/Test GPT"
+home_dir = "/home/maks-pacman/Test GPT"
+
 name = "bash"
-home = "/home/maks-pacman/CODING"
-# Команды помощи
-help_cmd = {
-    "help":"""  help:           Команда для этого списка и для каждой команды. пример: help <команда>.
-  q/exit:         Выход из программы. есть аргументы для выхода с очисткой: q/exit <-c/-clear>.
-  clear:          Команда очищяет екран. обьединима с командой q/exit в каччестве аргумента.
-  echo:           Команда echo это примерно это echo <что хотите> вывод <то что вы ввели после 'echo ' да имменно пробел.>"""
-}
 
-# Команды помощи с аргументами
-help_cmd_q = {
-    "help":"  q/exit:         Команда q/exit это команды выхода из скрипта. подержывают такие аргументы как: <-c/clear>"
-}
+try:
+    os.listdir(directoria)
+except FileNotFoundError:
+    print(f"{name}:    Рабочей папки не существует.")
+    print(f"{name}:    Экстренное завершение програмы.")
+    sys.exit(1)
+except PermissionError:
+    print(f"{name}:    Ошибка получения прав доступа к рабочей папке.")
+    print(f"{name}:    Экстренное завершение програмы.")
+    sys.exit(1)
 
-# Команды помощи с аргументами
-help_cmd_clear = {
-    "help":"  clear:          Команда clear очищяет екран. а также является аргументом для команды q/exit в виде -c/-clear"
-}
+try:
+    os.listdir(home_dir)
+except FileNotFoundError:
+    print(f"{name}:    Домашней папки не существует.")
+    print(f"{name}:    Экстренное завершение програмы.")
+    sys.exit(1)
+except PermissionError:
+    print(f"{name}:    Ошибка получения прав доступа к домашней папке.")
+    print(f"{name}:    Экстренное завершение програмы.")
+    sys.exit(1)
 
-# Команды помощи с аргументами
-help_cmd_echo = {
-    "help":"  echo:           Команда для вывода того что написал user после echo. пример: echo привет. вывод: привет."
-}
-# Основной цикл работы
-while runing:
-# Приглашение к вводу команды
-    inp = input(f"[{directoria} ] : [{name}] |>> $| ").strip()
-    # Команда выхода без очистки
+while True:
+
+    inp = input(f"{directoria}|{name}| >>> $ ").strip()
+
+    if not inp:
+        pass
+
     if inp == "q" or inp == "exit":
-        runing = False
-    else:
-    # Команда выхода с очисткой
-        if inp == "q -c" or inp == "q -clear" or inp == "exit -c" or inp == "exit -clear":
-            os.system("cls" if os.name == 'nt' else 'clear')
-            runing = False
-    # Команда очистки экрана
+        break
+    elif inp == "q -c" or inp == "q --clear" or inp == "exit -c" or inp == "exit --clear":
+        os.system('cls' if os.name == 'nt' else 'clear')
+        break
+
     if inp == "clear":
         os.system('cls' if os.name == 'nt' else 'clear')
-    # Команда echo <текст>
+
     if inp.startswith("echo "):
         text = inp[5:].strip()
         print(text)
-    # Команда secret (секретная команда)
-    if inp == "command":
-        print("#%$%#$^$&^$#@$^$^&$%^&^")
-    # Команда help (без аргументов)
-    if inp == "help":
-        print(help_cmd["help"])
-    else:
-        # Команда help <команда> (с аргументами)
-        if inp == "help q" or inp == "help exit":
-            print(help_cmd_q["help"])
-        else:
-            if inp == "help clear":
-                print(help_cmd_clear["help"])
+
+    elif inp == "echo":
+        pass
+    
+    if inp == "cd ~":
+        try:
+            os.listdir(home_dir)
+            directoria = home_dir
+        except FileNotFoundError:
+            print(f"{name}: cd: Такого каталога не существует {home_dir}")
+        except PermissionError:
+            print(f"{name}: cd: Отказано в доступе {home_dir}")
+
+    elif inp.startswith("cd "):
+        dir_cd = inp[3:].strip()
+        try:
+            os.listdir(dir_cd)
+            directoria = dir_cd
+        except FileNotFoundError:
+            print(f"{name}: cd: Такой директории не существует {dir_cd}")
+        except PermissionError:
+            print(f"{name}: cd: Отказано в доступе {dir_cd}")
+    
+    if inp.startswith("ls -m --folder "):
+        name_folder = inp[15:].strip()
+        new_folder_path = os.path.join(directoria, name_folder)
+        try:
+            os.listdir(directoria)
+            os.mkdir(new_folder_path)
+            print("Успешно!")
+        except FileExistsError:
+            print(f"{name}: ls: Такая папка уже существует")
+        except PermissionError:
+            print(f"{name}: ls: отказано в доступе {directoria}")
+
+    elif inp.startswith("ls -m --file "):
+        name_file = inp[13:].strip()
+        new_file_path = os.path.join(directoria, name_file)
+        try:
+            os.listdir(directoria)
+            if os.path.exists(new_file_path):
+                print(f"{name}: ls: Такой файл уже существует")
             else:
-                if inp == "help echo":
-                    print(help_cmd_echo["help"])
-                else:
-                    # Команда help all (все команды)
-                    if inp == "help all":
-                        print(help_cmd_q["help"])
-                        print(help_cmd_clear["help"])
-                        print(help_cmd_echo["help"])
-    # Обработка несуществующих команд и ошибок
-    cmd_error_inp = {
-        f"":"",
-        f"q":"",
-        f"exit":"",
-        f"q -c":"",
-        f"q -clear":"",
-        f"exit -c":"",
-        f"exit -clear":"",
-        f"clear":"",
-        f"help":"",
-        f"help q":"",
-        f"help exit":"",
-        f"help clear":"",
-        f"help echo":"",
-        f"help all":"",
-        f"echo{inp[4:]}":"",
-        f"command":""
+                with open(new_file_path, "w") as f:
+                    pass
+                print("Успешно!")
+        except PermissionError:
+            print(f"{name}: ls: Отказано в доступе {new_file_path}")
+
+    elif inp.startswith("ls -rm --folder "):
+        name_folder = inp[16:].strip()
+        delete_folder_path = os.path.join(directoria, name_folder)
+        try:
+            os.listdir(directoria)
+            os.removedirs(delete_folder_path)
+            print("Успешно!")
+        except PermissionError:
+            print(f"{name}: ls: Отказано в доступе {delete_folder_path}")
+        except FileNotFoundError:
+            print(f"{name}: ls: Такого файла/папки не существует {name_folder}")
+
+    elif inp.startswith("ls -rm --file "):
+        name_file = inp[14:].strip()
+        delete_file_path = os.path.join(directoria, name_file)
+        try:
+            os.listdir(directoria)
+            os.remove(delete_file_path)
+            print("Успешно!")
+        except PermissionError:
+            print(f"{name}: ls: Отказано в доступе {delete_file_path}")
+        except FileNotFoundError:
+            print(f"{name}: ls: Нет такого файла или каталога {name_file}")
+
+    elif inp == "ls":
+        print(os.listdir(directoria))
+
+    elif inp.startswith("ls -w "):
+        dire = inp[6:].strip()
+        try:
+            print(os.listdir(dire))
+        except PermissionError:
+            print(f"{name}: ls: {dire}: доступ запрещен")
+        except FileNotFoundError:
+            print(f"{name}: ls: {dire}: Такой директории не существует")
+
+    проверка = {
+        "":"",
+        "q":"",
+        "exit":"",
+        "q -c":"",
+        "q --clear":"",
+        "exit -c":"",
+        "exit --clear":"",
+        "clear":"",
+        "echo":"",
+        f"echo {inp[5:]}":"",
+        "ls":"",
+        f"ls {inp[3:]}":"",
+        f"cd {inp[3:]}":"",
+        f"cd":""
     }
 
-    # Игнорирование пустого ввода и известных команд
+    if inp not in проверка:
+        print(f"{name}: {inp}: Неизвестная команда")
 
-    if inp in cmd_error_inp:
-        ()
-    else:
-        print(f"{name}: {inp}: Такой команды не существует.")
-
-    # Конец основного цикла
+sys.exit(1)

@@ -1,1 +1,2 @@
-# For more information, see README_en.md or README_ru.md.
+# More info:
+Hi. This is a minimalist Python terminal. Written with love.
