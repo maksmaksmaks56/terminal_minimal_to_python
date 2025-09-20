@@ -12,3 +12,4 @@ ls: Shows all files/folders in the current directory.
 ls -w: Shows all files in the directory you specify.
 ls -m --file/--folder: Creates a file/folder in the current directory.
 ls -rm --file/--folder: Deletes a file/folder in the current directory.
+help: command list output
