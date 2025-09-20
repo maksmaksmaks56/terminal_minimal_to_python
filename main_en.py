@@ -3,8 +3,8 @@ import readline
 import sys
 # Настройки
 
-directoria = "/home/maks-pacman/Test GPT"
-home_dir = "/home/maks-pacman/Test GPT"
+directoria = "/home/maks-pacman/GitHab Realse/Bash"
+home_dir = "/home/maks-pacman/GitHab Realse/Bash"
 
 name = "bash"
 
@@ -30,12 +30,28 @@ except PermissionError:
     print(f"{name}:    Emergency termination of the program.")
     sys.exit(1)
 
+help_cmd = {
+    "help":"""q/exit: Exit the script.
+q/exit -c/--clear: Exit the script and clear the screen.
+echo: Prints the text after the command. Example: echo 1 Output → 1.
+cd: Moves you to the specified directory.
+cd ~ : Moves you to the home directory.
+ls: Shows all files/folders in the current directory.
+ls -w: Shows all files in the directory you specify.
+ls -m --file/--folder: Creates a file/folder in the current directory.
+ls -rm --file/--folder: Deletes a file/folder in the current directory.
+help: Show this coomand list"""
+}
+
 while True:
 
     inp = input(f"{directoria}|{name}| >>> $ ").strip()
 
     if not inp:
         pass
+
+    if inp == "help":
+        print(help_cmd["help"])
 
     if inp == "q" or inp == "exit":
         break
@@ -148,7 +164,8 @@ while True:
         "ls":"",
         f"ls {inp[3:]}":"",
         f"cd {inp[3:]}":"",
-        f"cd":""
+        f"cd":"",
+        f"help{inp[4:]}":""
     }
 
     if inp not in проверка:

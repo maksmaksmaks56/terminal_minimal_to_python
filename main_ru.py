@@ -3,8 +3,8 @@ import readline
 import sys
 # Настройки
 
-directoria = "/home/maks-pacman/Test GPT"
-home_dir = "/home/maks-pacman/Test GPT"
+directoria = "/home/maks-pacman/GitHab Realse/Bash"
+home_dir = "/home/maks-pacman/GitHab Realse/Bash"
 
 name = "bash"
 
@@ -30,12 +30,27 @@ except PermissionError:
     print(f"{name}:    Экстренное завершение програмы.")
     sys.exit(1)
 
+help_cmd = {
+    "help":"""q/exit: Выход из скрипта.
+q/exit -c/--clear: Выход из скрипта с очисткрй экрана.
+echo: Выводит текст после, себя пример: echo 1 вывод → 1. 
+cd: Переводит вас в назначеную директорию. 
+cd ~ : переводит вас в домашнюю директорию. 
+ls: показывает все файйлы/папки в донной директории. 
+ls -w: показывает все файлы в дериктории которую вы скажете. 
+ls -m --file/--folder: Создает в данной директории файл/папку. 
+ls -rm --file/--folder: Удаляет файл/папку в данной директории.
+help: Этот командный список."""
+}
 while True:
 
     inp = input(f"{directoria}|{name}| >>> $ ").strip()
 
     if not inp:
         pass
+
+    if inp == "help":
+        print(help_cmd["help"])
 
     if inp == "q" or inp == "exit":
         break
@@ -134,6 +149,7 @@ while True:
         except FileNotFoundError:
             print(f"{name}: ls: {dire}: Такой директории не существует")
 
+
     проверка = {
         "":"",
         "q":"",
@@ -148,7 +164,8 @@ while True:
         "ls":"",
         f"ls {inp[3:]}":"",
         f"cd {inp[3:]}":"",
-        f"cd":""
+        f"cd":"",
+        f"help{inp[4:]}":""
     }
 
     if inp not in проверка:
