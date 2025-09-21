@@ -11,22 +11,30 @@ name = "bash"
 try:
     os.listdir(directoria)
 except FileNotFoundError:
-    print(f"{name}:    Рабочей папки не существует.")
+    print(f"{name}:    Рабочей директории не существует.")
     print(f"{name}:    Экстренное завершение програмы.")
     sys.exit(1)
 except PermissionError:
-    print(f"{name}:    Ошибка получения прав доступа к рабочей папке.")
+    print(f"{name}:    Ошибка получения прав доступа к рабочей директории.")
     print(f"{name}:    Экстренное завершение програмы.")
+    sys.exit(1)
+except NotADirectoryError:
+    print(f"{name}:    Ошибка чтения {directoria} это файл а не директория")
+    print(f"{name}:    Экстренное завершения программы")
     sys.exit(1)
 
 try:
     os.listdir(home_dir)
 except FileNotFoundError:
-    print(f"{name}:    Домашней папки не существует.")
+    print(f"{name}:    Домашней директории не существует.")
     print(f"{name}:    Экстренное завершение програмы.")
     sys.exit(1)
 except PermissionError:
-    print(f"{name}:    Ошибка получения прав доступа к домашней папке.")
+    print(f"{name}:    Ошибка получения прав доступа к домашней директории.")
+    print(f"{name}:    Экстренное завершение програмы.")
+    sys.exit(1)
+except NotADirectoryError:
+    print(f"{name}:    Ошибка чтения {home_dir} это файл а не директория")
     print(f"{name}:    Экстренное завершение програмы.")
     sys.exit(1)
 
@@ -42,12 +50,10 @@ ls -m --file/--folder: Создает в данной директории фа�
 ls -rm --file/--folder: Удаляет файл/папку в данной директории.
 help: Этот командный список."""
 }
+
 while True:
 
     inp = input(f"{directoria}|{name}| >>> $ ").strip()
-
-    if not inp:
-        pass
 
     if inp == "help":
         print(help_cmd["help"])
@@ -64,7 +70,7 @@ while True:
     if inp.startswith("echo "):
         text = inp[5:].strip()
         print(text)
-
+        
     elif inp == "echo":
         pass
     
@@ -76,6 +82,8 @@ while True:
             print(f"{name}: cd: Такого каталога не существует {home_dir}")
         except PermissionError:
             print(f"{name}: cd: Отказано в доступе {home_dir}")
+        except NotADirectoryError:
+            print(f"{name}: cd: {home_dir}: Это путь к файлу а не директории")
 
     elif inp.startswith("cd "):
         dir_cd = inp[3:].strip()
@@ -86,6 +94,8 @@ while True:
             print(f"{name}: cd: Такой директории не существует {dir_cd}")
         except PermissionError:
             print(f"{name}: cd: Отказано в доступе {dir_cd}")
+        except NotADirectoryError:
+            print(f"{name}: cd: {dir_cd}: Это путь к файлу а не директории")
     
     if inp.startswith("ls -m --folder "):
         name_folder = inp[15:].strip()
@@ -148,6 +158,8 @@ while True:
             print(f"{name}: ls: {dire}: доступ запрещен")
         except FileNotFoundError:
             print(f"{name}: ls: {dire}: Такой директории не существует")
+        except NotADirectoryError:
+            print(f"{name}: ls: Это путь к файлу а не директории")
 
 
     проверка = {
@@ -170,5 +182,6 @@ while True:
 
     if inp not in проверка:
         print(f"{name}: {inp}: Неизвестная команда")
+
 
 sys.exit(1)

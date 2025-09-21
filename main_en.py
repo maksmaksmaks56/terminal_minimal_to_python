@@ -1,46 +1,57 @@
 import os
 import readline
 import sys
-# Настройки
+# Settings
 
 directoria = "/home/maks-pacman/GitHab Realse/Bash"
 home_dir = "/home/maks-pacman/GitHab Realse/Bash"
 
 name = "bash"
 
+# Check working directory
 try:
     os.listdir(directoria)
 except FileNotFoundError:
-    print(f"{name}:    There are no working folders.")
-    print(f"{name}:    Emergency termination of the program.")
+    print(f"{name}:    Working directory does not exist.")
+    print(f"{name}:    Emergency program termination.")
     sys.exit(1)
 except PermissionError:
-    print(f"{name}:    ")
-    print(f"{name}:    Emergency termination of the program.")
+    print(f"{name}:    Permission denied when accessing working directory.")
+    print(f"{name}:    Emergency program termination.")
+    sys.exit(1)
+except NotADirectoryError:
+    print(f"{name}:    Error reading {directoria}, it is a file not a directory")
+    print(f"{name}:    Emergency program termination.")
     sys.exit(1)
 
+# Check home directory
 try:
     os.listdir(home_dir)
 except FileNotFoundError:
-    print(f"{name}:    The home folder does not exist.")
-    print(f"{name}:    Emergency termination of the program.")
+    print(f"{name}:    Home directory does not exist.")
+    print(f"{name}:    Emergency program termination.")
     sys.exit(1)
 except PermissionError:
-    print(f"{name}:    Error obtaining access rights to home folder.")
-    print(f"{name}:    Emergency termination of the program.")
+    print(f"{name}:    Permission denied when accessing home directory.")
+    print(f"{name}:    Emergency program termination.")
+    sys.exit(1)
+except NotADirectoryError:
+    print(f"{name}:    Error reading {home_dir}, it is a file not a directory")
+    print(f"{name}:    Emergency program termination.")
     sys.exit(1)
 
+# Help command list
 help_cmd = {
     "help":"""q/exit: Exit the script.
 q/exit -c/--clear: Exit the script and clear the screen.
-echo: Prints the text after the command. Example: echo 1 Output → 1.
-cd: Moves you to the specified directory.
-cd ~ : Moves you to the home directory.
+echo: Prints the text after itself, example: echo 1 → output 1.
+cd: Move to the specified directory.
+cd ~ : Move to the home directory.
 ls: Shows all files/folders in the current directory.
 ls -w: Shows all files in the directory you specify.
 ls -m --file/--folder: Creates a file/folder in the current directory.
 ls -rm --file/--folder: Deletes a file/folder in the current directory.
-help: Show this coomand list"""
+help: This command list."""
 }
 
 while True:
@@ -74,9 +85,11 @@ while True:
             os.listdir(home_dir)
             directoria = home_dir
         except FileNotFoundError:
-            print(f"{name}: cd: Such a catalog does not exist. {home_dir}")
+            print(f"{name}: cd: No such directory {home_dir}")
         except PermissionError:
-            print(f"{name}: cd: Access denied {home_dir}")
+            print(f"{name}: cd: Permission denied {home_dir}")
+        except NotADirectoryError:
+            print(f"{name}: cd: {home_dir}: Is a file, not a directory")
 
     elif inp.startswith("cd "):
         dir_cd = inp[3:].strip()
@@ -84,9 +97,11 @@ while True:
             os.listdir(dir_cd)
             directoria = dir_cd
         except FileNotFoundError:
-            print(f"{name}: cd: Such directory does not exist {dir_cd}")
+            print(f"{name}: cd: No such directory {dir_cd}")
         except PermissionError:
-            print(f"{name}: cd: Access denied {dir_cd}")
+            print(f"{name}: cd: Permission denied {dir_cd}")
+        except NotADirectoryError:
+            print(f"{name}: cd: {dir_cd}: Is a file, not a directory")
     
     if inp.startswith("ls -m --folder "):
         name_folder = inp[15:].strip()
@@ -94,11 +109,11 @@ while True:
         try:
             os.listdir(directoria)
             os.mkdir(new_folder_path)
-            print("Successfully!")
+            print("Success!")
         except FileExistsError:
-            print(f"{name}: ls: This folder already exists.")
+            print(f"{name}: ls: Folder already exists")
         except PermissionError:
-            print(f"{name}: ls: Access denied {directoria}")
+            print(f"{name}: ls: Permission denied {directoria}")
 
     elif inp.startswith("ls -m --file "):
         name_file = inp[13:].strip()
@@ -106,13 +121,13 @@ while True:
         try:
             os.listdir(directoria)
             if os.path.exists(new_file_path):
-                print(f"{name}: ls: This file already exists")
+                print(f"{name}: ls: File already exists")
             else:
                 with open(new_file_path, "w") as f:
                     pass
-                print("Successfully!")
+                print("Success!")
         except PermissionError:
-            print(f"{name}: ls: Access denied {new_file_path}")
+            print(f"{name}: ls: Permission denied {new_file_path}")
 
     elif inp.startswith("ls -rm --folder "):
         name_folder = inp[16:].strip()
@@ -120,11 +135,11 @@ while True:
         try:
             os.listdir(directoria)
             os.removedirs(delete_folder_path)
-            print("Successfully!")
+            print("Success!")
         except PermissionError:
-            print(f"{name}: ls: Access denied {delete_folder_path}")
+            print(f"{name}: ls: Permission denied {delete_folder_path}")
         except FileNotFoundError:
-            print(f"{name}: ls: This file/folder does not exist {name_folder}")
+            print(f"{name}: ls: No such file or folder {name_folder}")
 
     elif inp.startswith("ls -rm --file "):
         name_file = inp[14:].strip()
@@ -132,9 +147,9 @@ while True:
         try:
             os.listdir(directoria)
             os.remove(delete_file_path)
-            print("Successfully!")
+            print("Success!")
         except PermissionError:
-            print(f"{name}: ls: Access denied {delete_file_path}")
+            print(f"{name}: ls: Permission denied {delete_file_path}")
         except FileNotFoundError:
             print(f"{name}: ls: No such file or directory {name_file}")
 
@@ -146,11 +161,14 @@ while True:
         try:
             print(os.listdir(dire))
         except PermissionError:
-            print(f"{name}: ls: {dire}: Access denied")
+            print(f"{name}: ls: {dire}: Permission denied")
         except FileNotFoundError:
-            print(f"{name}: ls: {dire}: Such directory does not exist")
+            print(f"{name}: ls: {dire}: No such directory")
+        except NotADirectoryError:
+            print(f"{name}: ls: {dire}: Is a file, not a directory")
 
-    проверка = {
+    # Command validation
+    validation = {
         "":"",
         "q":"",
         "exit":"",
@@ -168,7 +186,7 @@ while True:
         f"help{inp[4:]}":""
     }
 
-    if inp not in проверка:
-        print(f"{name}: {inp}: Comand not found")
+    if inp not in validation:
+        print(f"{name}: {inp}: Unknown command")
 
 sys.exit(1)
